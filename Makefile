@@ -1,6 +1,6 @@
 VENDOR_NAME=davidschneiderinfo
 
-all: install-services build-images install-dev-dependencies build-assets config up
+all: install-services pull-images install-dev-dependencies build-assets config up
 
 install-services:
 	test -d apps/blog || git clone git@github.com:DavidSchneiderInfo/Blog.git apps/blog
@@ -16,6 +16,12 @@ push-images:
 	docker push $(VENDOR_NAME)/service-php:latest
 	docker push $(VENDOR_NAME)/service-node:latest
 	docker push $(VENDOR_NAME)/service-composer:latest
+
+pull-images:
+	docker pull $(VENDOR_NAME)/service-nginx:latest
+	docker pull $(VENDOR_NAME)/service-php:latest
+	docker pull $(VENDOR_NAME)/service-node:latest
+	docker pull $(VENDOR_NAME)/service-composer:latest
 
 install-dev-dependencies:
 	docker-compose run --rm composer install
