@@ -1,27 +1,31 @@
-VENDOR_NAME=davidschneiderinfo
-
 all: install-services pull-images install-dev-dependencies build-assets config up
 
 install-services:
 	test -d apps/blog || git clone git@github.com:DavidSchneiderInfo/Blog.git apps/blog
 
 build-images:
-	docker build -t $(VENDOR_NAME)/service-nginx:latest docker/nginx
-	docker build -t $(VENDOR_NAME)/service-php:latest docker/php
-	docker build -t $(VENDOR_NAME)/service-node:latest docker/node
-	docker build -t $(VENDOR_NAME)/service-composer:latest docker/composer
+	# Blog app
+	(cd apps/blog/;docker build -f docker/php/Dockerfile -t davidschneiderinfo/blog-php .)
+	(cd apps/blog/;docker build -f docker/nginx/Dockerfile -t davidschneiderinfo/blog-nginx .)
+	# Generic images
+	docker build -t davidschneiderinfo/node:latest docker/node
+	docker build -t davidschneiderinfo/composer:latest docker/composer
 
 push-images:
-	docker push $(VENDOR_NAME)/service-nginx:latest
-	docker push $(VENDOR_NAME)/service-php:latest
-	docker push $(VENDOR_NAME)/service-node:latest
-	docker push $(VENDOR_NAME)/service-composer:latest
+	# Blog app
+	docker push davidschneiderinfo/blog-nginx:latest
+	docker push davidschneiderinfo/blog-php:latest
+	# Generic images
+	docker push davidschneiderinfo/node:latest
+	docker push davidschneiderinfo/composer:latest
 
 pull-images:
-	docker pull $(VENDOR_NAME)/service-nginx:latest
-	docker pull $(VENDOR_NAME)/service-php:latest
-	docker pull $(VENDOR_NAME)/service-node:latest
-	docker pull $(VENDOR_NAME)/service-composer:latest
+	# Blog app
+	docker pull davidschneiderinfo/blog-nginx:latest
+	docker pull davidschneiderinfo/blog-php:latest
+	# Generic images
+	docker pull davidschneiderinfo/node:latest
+	docker pull davidschneiderinfo/composer:latest
 
 install-dev-dependencies:
 	docker-compose run --rm composer install

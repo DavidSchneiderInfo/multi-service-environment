@@ -1,7 +1,7 @@
 version: '3'
 services:
   nginx:
-    image: davidschneiderinfo/service-nginx
+    image: davidschneiderinfo/blog-nginx
     build:
       context: ./docker/nginx
       dockerfile: Dockerfile
@@ -15,7 +15,7 @@ services:
     depends_on:
       - php
   php:
-    image: davidschneiderinfo/service-php
+    image: davidschneiderinfo/blog-php
     build:
       context: ./docker/php
       dockerfile: Dockerfile
@@ -67,11 +67,11 @@ services:
     networks:
       - service
   npm:
-    image: davidschneiderinfo/service-node
+    image: davidschneiderinfo/node
     volumes:
       - ./apps/blog:/var/www
   composer:
-    image: davidschneiderinfo/service-composer
+    image: davidschneiderinfo/composer
     volumes:
       - ./apps/blog:/var/www
 
