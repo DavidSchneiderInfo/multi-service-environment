@@ -11,9 +11,11 @@ services:
       - ./apps/blog:/var/www
       - ./logs/nginx:/var/log/nginx
     networks:
-      - service
+      - service-network
     depends_on:
-      - php
+      - blog-php
+    links:
+      - "blog-php:php"
   blog-php:
     image: davidschneiderinfo/blog-php
     build:
@@ -23,11 +25,7 @@ services:
       - ./apps/blog:/var/www
       - ./logs/blog:/var/www/storage/logs
     networks:
-      - service
-    depends_on:
-      - mysql
-      - redis
-      - mailhog
+      - service-network
   mysql:
     image: 'mysql/mysql-server:8.0'
     ports:
@@ -42,7 +40,7 @@ services:
     volumes:
       - 'service-mysql:/var/lib/mysql'
     networks:
-      - service
+      - service-network
     healthcheck:
       test: ["CMD", "mysqladmin", "ping", "-p${DB_PASSWORD}"]
       retries: 3
@@ -54,7 +52,7 @@ services:
     volumes:
       - 'service-redis:/data'
     networks:
-      - service
+      - service-network
     healthcheck:
       test: ["CMD", "redis-cli", "ping"]
       retries: 3
@@ -65,7 +63,7 @@ services:
       - '${FORWARD_MAILHOG_PORT:-1025}:1025'
       - '${FORWARD_MAILHOG_DASHBOARD_PORT:-8025}:8025'
     networks:
-      - service
+      - service-network
   npm:
     image: davidschneiderinfo/node
     volumes:
@@ -76,7 +74,7 @@ services:
       - ./apps/blog:/var/www
 
 networks:
-  service:
+  service-network:
     driver: bridge
 volumes:
   service-mysql:

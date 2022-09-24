@@ -46,8 +46,8 @@ config:
 	test -f .env || cat .env.example > .env
 	test -f apps/blog/.env || \
 		cat apps/blog/.env.example > apps/blog/.env && \
-		docker-compose run --rm php artisan key:generate && \
-		docker-compose run --rm php artisan migrate	
+		docker-compose run --rm blog-php artisan key:generate && \
+		docker-compose run --rm blog-php artisan migrate
 
 up:
 	docker-compose up -d
