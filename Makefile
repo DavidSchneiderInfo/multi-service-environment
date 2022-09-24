@@ -8,7 +8,9 @@ build-images:
 	(cd apps/blog/;docker build -f docker/php/Dockerfile -t davidschneiderinfo/blog-php .)
 	(cd apps/blog/;docker build -f docker/nginx/Dockerfile -t davidschneiderinfo/blog-nginx .)
 	# Generic images
+	# Node
 	docker build -t davidschneiderinfo/node:latest docker/node
+	# Composer for PHP
 	docker build -t davidschneiderinfo/composer:latest docker/composer
 
 push-images:

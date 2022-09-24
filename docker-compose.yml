@@ -1,6 +1,6 @@
 version: '3'
 services:
-  nginx:
+  blog-nginx:
     image: davidschneiderinfo/blog-nginx
     build:
       context: ./docker/nginx
@@ -14,7 +14,7 @@ services:
       - service
     depends_on:
       - php
-  php:
+  blog-php:
     image: davidschneiderinfo/blog-php
     build:
       context: ./docker/php
