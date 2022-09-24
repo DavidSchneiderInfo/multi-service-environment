@@ -3,7 +3,7 @@ services:
   blog-nginx:
     image: davidschneiderinfo/blog-nginx
     build:
-      context: ./docker/nginx
+      context: ./apps/blog/docker/nginx
       dockerfile: Dockerfile
     ports:
       - '${NGINX_PORT:-80}:80'
@@ -22,7 +22,7 @@ services:
       - "DOMAIN_NAME=${DOMAIN_NAME}"
     image: davidschneiderinfo/blog-php
     build:
-      context: ./docker/php
+      context: ./apps/blog/docker/php
       dockerfile: Dockerfile
     volumes:
       - ./apps/blog:/var/www
