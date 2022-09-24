@@ -8,6 +8,8 @@ build-images:
 	(cd apps/blog/;docker build -f docker/php/Dockerfile -t davidschneiderinfo/blog-php .)
 	(cd apps/blog/;docker build -f docker/nginx/Dockerfile -t davidschneiderinfo/blog-nginx .)
 	# Generic images
+	# Nginx
+	docker build -t davidschneiderinfo/nginx:latest docker/nginx
 	# Node
 	docker build -t davidschneiderinfo/node:latest docker/node
 	# Composer for PHP
@@ -18,6 +20,7 @@ push-images:
 	docker push davidschneiderinfo/blog-nginx:latest
 	docker push davidschneiderinfo/blog-php:latest
 	# Generic images
+	docker push davidschneiderinfo/nginx:latest
 	docker push davidschneiderinfo/node:latest
 	docker push davidschneiderinfo/composer:latest
 
@@ -26,6 +29,7 @@ pull-images:
 	docker pull davidschneiderinfo/blog-nginx:latest
 	docker pull davidschneiderinfo/blog-php:latest
 	# Generic images
+	docker pull davidschneiderinfo/nginx:latest
 	docker pull davidschneiderinfo/node:latest
 	docker pull davidschneiderinfo/composer:latest
 

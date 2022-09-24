@@ -12,11 +12,14 @@ services:
       - ./logs/nginx:/var/log/nginx
     networks:
       - service-network
+    hostname: "blog.${DOMAIN_NAME}"
     depends_on:
       - blog-php
     links:
       - "blog-php:php"
   blog-php:
+    environment:
+      - "DOMAIN_NAME=${DOMAIN_NAME}"
     image: davidschneiderinfo/blog-php
     build:
       context: ./docker/php
@@ -41,6 +44,7 @@ services:
       - 'service-mysql:/var/lib/mysql'
     networks:
       - service-network
+    hostname: "mysql.${DOMAIN_NAME}"
     healthcheck:
       test: ["CMD", "mysqladmin", "ping", "-p${DB_PASSWORD}"]
       retries: 3
@@ -53,6 +57,7 @@ services:
       - 'service-redis:/data'
     networks:
       - service-network
+    hostname: "redis.${DOMAIN_NAME}"
     healthcheck:
       test: ["CMD", "redis-cli", "ping"]
       retries: 3
@@ -64,6 +69,7 @@ services:
       - '${FORWARD_MAILHOG_DASHBOARD_PORT:-8025}:8025'
     networks:
       - service-network
+    hostname: "mailhog.${DOMAIN_NAME}"
   npm:
     image: davidschneiderinfo/node
     volumes:
