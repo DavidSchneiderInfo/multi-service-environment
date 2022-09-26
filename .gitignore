@@ -3,3 +3,5 @@
 logs
 apps
 .DS_Store
+.env.bak
+.jenkins
