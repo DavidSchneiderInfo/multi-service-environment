@@ -74,14 +74,6 @@ services:
       - '${FORWARD_MAILHOG_DASHBOARD_PORT:-8025}:8025'
     networks:
       - service-network
-  npm:
-    image: davidschneiderinfo/node
-    volumes:
-      - ./apps/blog:/var/www
-  composer:
-    image: davidschneiderinfo/composer
-    volumes:
-      - ./apps/blog:/var/www
   jenkins:
     image: jenkins/jenkins:lts
     privileged: true
@@ -113,6 +105,8 @@ services:
       - "JENKINS_AGENT_SSH_PUBKEY=${JENKINS_AGENT_SSH_PUBKEY}"
     networks:
       - service-network
+    depends_on:
+      - jenkins
 networks:
   service-network:
     driver: bridge

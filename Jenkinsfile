@@ -3,7 +3,8 @@ pipeline {
       stages {
         stage('log version info') {
       steps {
-        sh 'docker -v'
+        sh 'make'
+        sh 'make down'
       }
     }
   }

@@ -1,3 +1,5 @@
+ROOT_DIR:=$(shell dirname $(realpath $(firstword $(MAKEFILE_LIST))))
+
 all: install-services pull-images install-dev-dependencies build-assets config up
 
 install-services:
@@ -12,8 +14,8 @@ build-images:
 	docker build -t davidschneiderinfo/nginx:latest docker/nginx
 	# Node
 	docker build -t davidschneiderinfo/node:latest docker/node
-	# Composer for PHP
-	docker build -t davidschneiderinfo/composer:latest docker/composer
+	# PHP
+	docker build -t davidschneiderinfo/php:latest docker/php
 
 push-images:
 	# Blog app
@@ -22,7 +24,7 @@ push-images:
 	# Generic images
 	docker push davidschneiderinfo/nginx:latest
 	docker push davidschneiderinfo/node:latest
-	docker push davidschneiderinfo/composer:latest
+	docker push davidschneiderinfo/php:latest
 
 pull-images:
 	# Blog app
@@ -31,16 +33,36 @@ pull-images:
 	# Generic images
 	docker pull davidschneiderinfo/nginx:latest
 	docker pull davidschneiderinfo/node:latest
-	docker pull davidschneiderinfo/composer:latest
+	docker pull davidschneiderinfo/php:latest
 
 install-dev-dependencies:
-	docker-compose run --rm composer install
-	docker-compose run --rm npm install
+	docker run --rm \
+		-v "${ROOT_DIR}/apps/blog:/var/www" \
+		-w /var/www \
+		davidschneiderinfo/node \
+		npm install
+	docker run --rm \
+		-v "${ROOT_DIR}/apps/blog:/var/www" \
+		-w /var/www \
+		davidschneiderinfo/php \
+		composer install --ignore-platform-reqs
 
 install-prod-dependencies:
-	docker-compose run --rm composer install --no-dev
-	docker-compose run --rm npm install
-	docker-compose run --rm npm run build
+	docker run --rm \
+		-v "${ROOT_DIR}/apps/blog:/var/www" \
+		-w /var/www \
+		davidschneiderinfo/php \
+		composer install --ignore-platform-reqs
+	docker run --rm \
+		-v "${ROOT_DIR}/apps/blog:/var/www" \
+		-w /var/www \
+		davidschneiderinfo/node \
+		npm install
+	docker run --rm \
+		-v "${ROOT_DIR}/apps/blog:/var/www" \
+		-w /var/www \
+		davidschneiderinfo/node \
+		npm run build
 	rm -rf apps/blog/node_modules
 
 build-assets:
