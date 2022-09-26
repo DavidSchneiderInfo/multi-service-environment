@@ -1,14 +1,11 @@
 ROOT_DIR:=$(shell dirname $(realpath $(firstword $(MAKEFILE_LIST))))
 
-all: install-services pull-images install-dev-dependencies build-assets config up
+all: install-services build-images install-dev-dependencies build-assets config up
 
 install-services:
 	test -d apps/blog || git clone https://github.com/DavidSchneiderInfo/blog.git apps/blog
 
 build-images:
-	# Blog app
-	(cd apps/blog/;docker build -f docker/php/Dockerfile -t davidschneiderinfo/blog-php .)
-	(cd apps/blog/;docker build -f docker/nginx/Dockerfile -t davidschneiderinfo/blog-nginx .)
 	# Generic images
 	# Nginx
 	docker build -t davidschneiderinfo/nginx:latest docker/nginx
@@ -16,24 +13,27 @@ build-images:
 	docker build -t davidschneiderinfo/node:latest docker/node
 	# PHP
 	docker build -t davidschneiderinfo/php:latest docker/php
+	# Blog app
+	(cd apps/blog/;docker build -f docker/php/Dockerfile -t davidschneiderinfo/blog-php .)
+	(cd apps/blog/;docker build -f docker/nginx/Dockerfile -t davidschneiderinfo/blog-nginx .)
 
 push-images:
-	# Blog app
-	docker push davidschneiderinfo/blog-nginx:latest
-	docker push davidschneiderinfo/blog-php:latest
 	# Generic images
 	docker push davidschneiderinfo/nginx:latest
 	docker push davidschneiderinfo/node:latest
 	docker push davidschneiderinfo/php:latest
+	# Blog app
+	docker push davidschneiderinfo/blog-nginx:latest
+	docker push davidschneiderinfo/blog-php:latest
 
 pull-images:
-	# Blog app
-	docker pull davidschneiderinfo/blog-nginx:latest
-	docker pull davidschneiderinfo/blog-php:latest
 	# Generic images
 	docker pull davidschneiderinfo/nginx:latest
 	docker pull davidschneiderinfo/node:latest
 	docker pull davidschneiderinfo/php:latest
+	# Blog app
+	docker pull davidschneiderinfo/blog-nginx:latest
+	docker pull davidschneiderinfo/blog-php:latest
 
 install-dev-dependencies:
 	docker run --rm \
