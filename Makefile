@@ -3,7 +3,7 @@ ROOT_DIR:=$(shell dirname $(realpath $(firstword $(MAKEFILE_LIST))))
 all: install-services pull-images install-dev-dependencies build-assets config up
 
 install-services:
-	test -d apps/blog || git clone git@github.com:DavidSchneiderInfo/blog.git apps/blog
+	test -d apps/blog || git clone https://github.com/DavidSchneiderInfo/blog.git apps/blog
 
 build-images:
 	# Blog app
