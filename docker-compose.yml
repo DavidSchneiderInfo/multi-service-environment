@@ -19,7 +19,7 @@ services:
       dockerfile: Dockerfile
     volumes:
       - ./apps/blog:/var/www
-      - ./logs/blog-nginx:/var/log/nginx
+      - ./logs/blog/nginx:/var/log/nginx
     networks:
       - service-network
     depends_on:
@@ -37,7 +37,7 @@ services:
       - 'DB_PASSWORD=${DB_PASSWORD:-secret}'
     volumes:
       - ./apps/blog:/var/www
-      - ./logs/blog-php:/var/www/storage/logs
+      - ./logs/blog/php:/var/www/storage/logs
     networks:
       - service-network
   prototype-nginx:
@@ -47,7 +47,7 @@ services:
       dockerfile: ./apps/prototype/docker/nginx/Dockerfile
     volumes:
       - ./apps/prototype:/var/www
-      - ./logs/prototype-nginx:/var/log/nginx
+      - ./logs/prototype/nginx:/var/log/nginx
     networks:
       - service-network
     depends_on:
@@ -65,7 +65,7 @@ services:
       - 'DB_PASSWORD=${DB_PASSWORD:-secret}'
     volumes:
       - ./apps/prototype:/var/www
-      - ./logs/prototype-php:/var/www/storage/logs
+      - ./logs/prototype/php:/var/www/storage/logs
     networks:
       - service-network
   mysql:
