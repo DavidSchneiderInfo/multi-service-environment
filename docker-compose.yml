@@ -31,9 +31,41 @@ services:
     build:
       context: ./docker/php
       dockerfile: Dockerfile
+    environment:
+      - DB_DATABASE=blog
+      - DB_USERNAME=root
+      - 'DB_PASSWORD=${DB_PASSWORD:-secret}'
     volumes:
       - ./apps/blog:/var/www
       - ./logs/blog-php:/var/www/storage/logs
+    networks:
+      - service-network
+  prototype-nginx:
+    image: davidschneiderinfo/prototype-nginx
+    build:
+      context: ./apps/nginx
+      dockerfile: ./apps/prototype/docker/nginx/Dockerfile
+    volumes:
+      - ./apps/prototype:/var/www
+      - ./logs/prototype-nginx:/var/log/nginx
+    networks:
+      - service-network
+    depends_on:
+      - prototype-php
+    links:
+      - "prototype-php:php"
+  prototype-php:
+    image: davidschneiderinfo/prototype-php
+    build:
+      context: ./apps/prototype
+      dockerfile: ./apps/prototype/docker/php/Dockerfile
+    environment:
+      - DB_DATABASE=prototype
+      - DB_USERNAME=root
+      - 'DB_PASSWORD=${DB_PASSWORD:-secret}'
+    volumes:
+      - ./apps/prototype:/var/www
+      - ./logs/prototype-php:/var/www/storage/logs
     networks:
       - service-network
   mysql:
@@ -41,18 +73,18 @@ services:
     ports:
       - '${FORWARD_DB_PORT:-3306}:3306'
     environment:
-      MYSQL_ROOT_PASSWORD: '${DB_PASSWORD}'
+      MYSQL_ROOT_PASSWORD: '${DB_PASSWORD:-secret}'
       MYSQL_ROOT_HOST: "%"
-      MYSQL_DATABASE: '${DB_DATABASE}'
-      MYSQL_USER: '${DB_USERNAME}'
-      MYSQL_PASSWORD: '${DB_PASSWORD}'
+      MYSQL_USER: '${DB_USER:-operator}'
+      MYSQL_PASSWORD: '${DB_PASSWORD:-secret}'
       MYSQL_ALLOW_EMPTY_PASSWORD: 1
     volumes:
       - 'service-mysql:/var/lib/mysql'
+      - ./config/mysql/initdb.d:/docker-entrypoint-initdb.d
     networks:
       - service-network
     healthcheck:
-      test: ["CMD", "mysqladmin", "ping", "-p${DB_PASSWORD}"]
+      test: ["CMD", "mysqladmin", "ping", "-p${DB_PASSWORD:-secret}"]
       retries: 3
       timeout: 5s
   redis:
